@@ -42,3 +42,31 @@ poetry run python -c "import fastapi, langchain, chromadb, neo4j, spacy; print('
 ```bash
 poetry run uvicorn backend.app.main:app --reload
 ```
+
+### I3
+
+Why Neo4j?
+
+- Neo4j is a graph database so instead of storing data in tables with rows and columns like a traditional database, it stores nodes (entities) and edges (relationships between them).
+  - For Episteme:
+    - Scientific knowledge is inherently a graph: a paper uses a method, a method evaluates on a dataset, an author is affiliated with an institution.
+    - Trying to represent that in a relational database means lots of painful JOIN queries. In Neo4j it's a natural traversal.
+
+Why Docker for Neo4j?
+
+- Neo4j is a Java application with its own server process. It's not a Python package you can just pip install.
+  - Docker can run it as a contained service without installing Java or Neo4j globally on local machine.
+  - When finished with the project, `docker-compose down` removes it cleanly, thus no system pollution.
+- Verify & Start
+  - http://localhost:7474/browser/
+
+```bash
+docker --version
+docker compose up neo4j -d
+docker compose logs neo4j
+```
+
+What is APOC?
+
+- Awesome Procedures on Cypher (APOC) is Neo4j's standard plugin library
+  - Adds hundreds of utility procedures for things like data import, graph algorithms, and text processing.
