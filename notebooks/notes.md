@@ -86,6 +86,52 @@ What is APOC?
 
 ## Milestone 1
 
+### I6
+
+What is arXiv?
+- a free, open-access repository where researchers post scientific papers before or alongside formal journal publication, aka preprints.
+  - It covers physics, mathematics, computer science, AI, statistics, and etc.
+  - Every ML paper worth knowing about lands on arXiv first, often months before the journal publishes it.
+
+Why is this data source for Episteme?
+- completely free with no authentication required. 
+- every paper has a stable ID (like 2305.10601) that can be used to fetch the PDF, metadata, and track citations. 
+- has an official Python client so no scraping involved, which means no legal risk and no fragile HTML parsing.
+
+What does arXiv API return?
+- each paper returns a structured JSON object with fields like:
+  - title
+  - authors
+  - abstract
+  - categories (like cs.AI or cs.CL)
+  - published date
+  - arXiv ID
+  - a direct PDF link
+  
+### I7
+
+`arxiv_client.py`
+- Defines the `Paper` dataclass: a typed container for paper metadata
+- Defines `fetch_papers`: the function that talks to arXiv and returns a list of `Paper` objects
+- Checks the cache before every API call
+- Saves results to `data/raw/` after every successful fetch
+
+`test_arxiv.py`
+- Imports `fetch_papers` from the pipeline file
+- Calls it with a test query and prints the results
+- Only purpose is to confirm the pipeline works during development
+- When test script is run:
+  - `test_arxiv.py` called `fetch_papers`
+  - `arxiv_client.py` checked `data/raw/` for a cached file, found nothing
+  - Built the search query: `(retrieval augmented generation) AND (cat:cs.AI OR cat:cs.CL)`
+  - Hit the arXiv API
+    - got back 121,400 matches
+    - pulled the top 5 by relevance
+  - Converted each result into a typed `Paper` object
+  - Saved all 5 to `data/raw/retrieval_augmented_generation.json`
+  - Returned the list to `test_arxiv.py` which printed them
+- If runs again, will be "Loading cached results" instead of hitting the API
+
 ## Milestone 2
 
 ## Milestone 3
